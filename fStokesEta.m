@@ -1,4 +1,4 @@
-function [eta,etaij] = fStokesEta(x,t,wp,order)
+function [eta,swl,etaij] = fStokesEta(x,t,wp,order)
 % Computes surface elevation according to stokes theory (Fenton, 1985)
 % Acceptable input space-time coordinate (x,z,t) formats:
 % 1) Only one is a non-scalar
@@ -57,4 +57,7 @@ for i = 1:order
 end
 
 %% Mean water level change
-eta = eta + ((H/2)^2)*k/(2*sinh(2*kd));
+swl = ((H/2)^2)*k/(2*sinh(2*kd));
+if order>1
+    eta = eta + swl;
+end

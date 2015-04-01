@@ -24,7 +24,13 @@ function [k] = fDispersionV5(d,T,H,order)
     end
 
     omega = 2*pi/T;
-    k = fzero(@(k) calcLHS(k,d,omega,H,order),omega^2/9.81);
+    g = 9.81;
+    p = omega^2*d/g;
+    q = (tanh(p^0.75))^(-2/3);
+    k0 = omega^2*q/g;
+    
+%     k = fzero(@(k) calcLHS(k,d,omega,H,order),omega^2/9.81);
+    k = fzero(@(k) calcLHS(k,d,omega,H,order),k0);
 end
 
 function [lhs] = calcLHS(k,d,omega,H,order)
@@ -34,6 +40,7 @@ function [lhs] = calcLHS(k,d,omega,H,order)
     S = 1/cosh(2*kd);
     
     ur = -((H/2)^2)*k*pi*(1/tanh(kd))/((2*pi/omega)*kd);
+%     ur = 0;
     
     C0 = sqrt(tanh(kd));
     C2 = ((sqrt(tanh(kd)))*(2+7*S^2))/(4*(1-S)^2);
@@ -53,4 +60,3 @@ function [lhs] = calcLHS(k,d,omega,H,order)
             lhs = (omega/k-ur) * sqrt(k/g) - C0 - (epsilon^2)*(C2+D2/kd) - (epsilon^4)*(C4+D4/kd);
     end
 end
-
