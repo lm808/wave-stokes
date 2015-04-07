@@ -1,14 +1,10 @@
-function [u,w] = fStokesVel(x,z,t,wp,order)
+function [u,w,ur] = fStokesVel(x,z,t,wp)
 % Computes velocity according to stokes theory (Fenton, 1985)
 % Acceptable input space-time coordinate (x,z,t) formats:
 % 1) Only one is a non-scalar
 % 2) Arrays of same sizes
 % 'order'  can be 1~5;
 % Li Ma, August 2013
-
-if nargin == 3
-    order = 5;
-end
 
 g = 9.81;
 
@@ -17,6 +13,7 @@ H = wp.H;
 omega = wp.omega;
 d = wp.d;
 k = wp.k;
+order = wp.order;
 
 %% Fenton coefficients
 kd = k*d;
@@ -37,6 +34,12 @@ A(5,1) = (-1184+32*S+13232*(S^2)+21712*(S^3)+20940*(S^4)+12554*(S^5)-500*(S^6)-3
 A(5,3) = (4*S+105*(S^2)+198*(S^3)-1376*(S^4)-1302*(S^5)-117*(S^6)+58*(S^7))/(32*sinh(kd)*(3+2*S)*((1-S)^6));
 A(5,5) = (-6*(S^3)+272*(S^4)-1552*(S^5)+852*(S^6)+2029*(S^7)+430*(S^8))/(64*sinh(kd)*(3+2*S)*(4+S)*((1-S)^6));
 
+%% adjust SWL
+if wp.SwlAdjust && wp.order>1
+    swl = ((H/2)^2)*k/(2*sinh(2*kd));
+    z = z - swl;
+end
+
 %% Components from different orders/harmonics
 uij = cell(order,order);
 wij = cell(order,order);
@@ -55,4 +58,12 @@ for i = 1:order
         u = u + uij{i,j};
         w = w + wij{i,j};
     end
+end
+
+%% add return flow
+if wp.ReturnFlow && wp.order>1
+    ur = -((H/2)^2)*k*pi*(1/tanh(kd))/((2*pi/omega)*kd);
+    u = u + ur;
+else
+    ur = 0;
 end
