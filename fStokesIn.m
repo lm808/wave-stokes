@@ -3,14 +3,19 @@ function [wp] = fStokesIn(d,T,H,order,varargin)
 % ------------------------------------------------------------------------
 % d - mean water depth
 % T - wave period
-% H - trough-to-crest wave height
+% H - trough-to-crest wave height, or the crest elevation. If it is the
+%     latter, set 'IterateCrest' to 'on'.
 % order - order of the stokes theory to be applied
 % varargin:
 %   'ReturnFlow' : ['on' | 'off']
 %   'DTerms' : ['on' | 'off']
 %   'SwlAdjust' : ['on' | 'off']
+%   'IterateCrest' : ['on' | 'off']
 % ------------------------------------------------------------------------
-% Li Ma, April 2015
+% Li Ma, October 2019
+
+    % default
+    IterateCrest = false;
 
     % construct  struct
     wp = struct('waveModel','stokes','H',H,'T',T,'d',d,'order',order,'omega',2*pi/T);
@@ -26,6 +31,8 @@ function [wp] = fStokesIn(d,T,H,order,varargin)
                     wp.DTerms = fProcessSwitch(varargin{i+1});
                 case 'SWLADJUST'
                     wp.SwlAdjust = fProcessSwitch(varargin{i+1});
+                case 'ITERATECREST'
+                    IterateCrest = fProcessSwitch(varargin{i+1});
                 otherwise
                     error('Invalid option.')
             end
@@ -43,13 +50,33 @@ function [wp] = fStokesIn(d,T,H,order,varargin)
     end
 
     if ~isfield(wp,'SwlAdjust')
-        wp.SwlAdjust = 0;
-        disp('fStokesIn: default OFF for SWL adjustment.')
+        wp.SwlAdjust = 1;
+        disp('fStokesIn: default ON for SWL adjustment.')
     end
 
     % compute wave number
     wp.k = fDispersionV5(d,T,H,order,'ReturnFlow',wp.ReturnFlow,'DTerms',wp.DTerms);
     wp.lamda = 2*pi/wp.k;
+    
+    % if the input H is in fact a target crest for iteration
+    if IterateCrest
+        c_target = H;
+        tol = 1e-12;
+        err = 1;
+        wp = fStokesIn(d, T, c_target* 2, order, ...
+                       'ReturnFlow',wp.ReturnFlow,...
+                       'DTerms',wp.DTerms,...
+                       'SwlAdjust', wp.SwlAdjust);
+        c = fStokesEta(0, 0, wp);
+        while err > tol
+            wp = fStokesIn(d, T, c_target / c * wp.H, order, ...
+                           'ReturnFlow',wp.ReturnFlow,...
+                           'DTerms',wp.DTerms,...
+                           'SwlAdjust', wp.SwlAdjust);
+            c = fStokesEta(0, 0, wp);
+            err = abs(c-c_target);
+        end
+    end
 end
 
 function [out] = fProcessSwitch(in)

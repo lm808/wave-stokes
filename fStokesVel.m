@@ -1,4 +1,4 @@
-function [u,w,ur] = fStokesVel(x,z,t,wp)
+function [u,w,ur,uij] = fStokesVel(x,z,t,wp)
 % Computes velocity according to stokes theory (Fenton, 1985)
 % Acceptable input space-time coordinate (x,z,t) formats:
 % 1) Only one is a non-scalar
@@ -57,6 +57,13 @@ for i = 1:order
     for j = 1:i
         u = u + uij{i,j};
         w = w + wij{i,j};
+    end
+end
+
+%% Current
+if isfield(wp, 'Uc')
+    if wp.Uc ~= 0
+        u = u + wp.Uc;
     end
 end
 

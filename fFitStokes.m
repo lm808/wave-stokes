@@ -1,4 +1,4 @@
-function [H,T,shift] = fFitStokes(t,eta,d,order,fit_type,varargin)
+function wp = fFitStokes(t,eta,d,order,fit_type,varargin)
 % t, eta - time history of the wave surface profile to be fitted, 
 %          will automatically pick the largest crest to fit
 % d - water depth
@@ -15,6 +15,14 @@ function [H,T,shift] = fFitStokes(t,eta,d,order,fit_type,varargin)
 %   'SwlAdjust' : ['on' | 'off']
 % Li Ma, October 2014
 
+% Defaults
+ReturnFlow = 0;
+DTerms = 0;
+SwlAdjust = 1;
+plotfit = 1;
+auto = 0;
+
+% Additional options
 n = length(varargin);
 for i = 1:2:n-1
     switch upper(varargin{i})
@@ -31,23 +39,8 @@ for i = 1:2:n-1
         case 'SWLADJUST'
             SwlAdjust = fProcessSwitch(varargin{i+1});
         otherwise
-            error('Invalid option.')
+            error(['Invalid option: ',varargin{i}])
     end
-end
-
-if ~exist('ReturnFlow','var')
-    ReturnFlow = 0;
-    disp('fFitStokes: default OFF for return flow.')
-end
-
-if ~exist('DTerms','var')
-    DTerms = 0;
-    disp('fFitStokes: default OFF for d-terms.')
-end
-
-if ~exist('SwlAdjust','var')
-    SwlAdjust = 0;
-    disp('fFitStokes: default OFF for SWL adjustment.')
 end
 
 %% extract crest region, and shift crest to t=0
@@ -58,7 +51,7 @@ if length(sp)==1
         its = 1;
         ite = length(t);
 elseif length(sp)==2
-    if sc == 2;
+    if sc == 2
         its = sp(sc-1)+1;
         ite = length(t);
     elseif sc == 1
@@ -86,11 +79,11 @@ dx = fFind0X(eta,'down');
 
 %% fit period
 T = [diff(t(ux)),diff(t(dx)),diff(t(st))];
-fprintf('T choices: \n1) 0-up-x: %f\n2) 0-down-x: %f\n3) trough-to-trough: %f\n',T(1),T(2),T(3))
 
-if exist('auto','var')
+if auto
     T = T(T_choice);
 else
+    fprintf('T choices: \n1) 0-up-x: %f\n2) 0-down-x: %f\n3) trough-to-trough: %f\n',T(1),T(2),T(3))
     T = T(input('T-choice: '));
 end
 
@@ -98,10 +91,10 @@ end
 switch lower(fit_type)
     case 'h'
         H = [eta(sp) - eta(st(1)),eta(sp) - eta(st(2)),mean([eta(sp) - eta(st(1)),eta(sp) - eta(st(2))])];
-        fprintf('H choices: \n1) trough-to-peak: %f\n2) peak-to-trough: %f\n3) average: %f\n',H(1),H(2),H(3))
-        if exist('auto','var')
+        if auto
             H = H(H_choice);
         else
+            fprintf('H choices: \n1) trough-to-peak: %f\n2) peak-to-trough: %f\n3) average: %f\n',H(1),H(2),H(3))
             H = H(input('H-choice: '));
         end
     case 'cr'
@@ -125,9 +118,10 @@ if strcmpi(fit_type,'H')
 else
     shift = 0;
 end
+wp.shift = shift;
 
 %% plot fitted result
-if exist('plotfit','var') && plotfit
+if plotfit
     figure
     plot(t,eta,'b')
     hold on
@@ -135,7 +129,7 @@ if exist('plotfit','var') && plotfit
     plot(t(sp),eta(sp),'mo');
     plot(t(dx),eta(dx),'rx');
     plot(t(ux),eta(ux),'gx');
-    rule(0,'h','k--')
+    rule(0,'h','k--');
     xlabel('t')
     ylabel('\eta');
     plot(t,eta5+shift,'r');
@@ -146,7 +140,7 @@ end
 function [out] = fProcessSwitch(in)
     yesList = {'YES','ON','TRUE','Y'};
     noList = {'NO','OFF','FALSE','N'};
-    if isnumeric(in) | islogical(in)
+    if isnumeric(in) || islogical(in)
         out = ~~in;
     else
         if any(strcmpi(in,yesList)) 

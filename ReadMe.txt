@@ -1,6 +1,8 @@
 Stokes (up to) 5th-order Regular Wave
 Implemented according to Fenton, 1985
-April 2015
+
+LM, 16 April 2015
+[git SHA1 ID: 3e2e3bb61a7dcb3769801399c4bfc66f99a7620d]
 
 Functions:
 fDispersionV5.m - dispersion equation, variable orders from 1-5
