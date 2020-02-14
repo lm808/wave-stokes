@@ -7,8 +7,8 @@ Released under the GNU General Public License v3.0. The author reserves the righ
 Copyright (c) 2013-2020 lm808. All rights reserved.
 
 # Cite as
-L. Ma, wave-stokes (2020), open-source repository, https://github.com/lm808/wave-stokes
-Fenton, J. (1985). A 5 th -order stokes theory for steady waves. Journal of Waterway, Port, Coastal, and Ocean Engineering, 111 , 216–234.
+* L. Ma, wave-stokes (2020), open-source repository, https://github.com/lm808/wave-stokes
+* Fenton, J. (1985). A 5 th -order stokes theory for steady waves. Journal of Waterway, Port, Coastal, and Ocean Engineering, 111 , 216–234.
 
 # Usage
 1. Download and add to MATLAB path.
