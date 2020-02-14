@@ -1,18 +1,34 @@
-function [wp] = fStokesIn(d,T,H,order,varargin)
-% Constructs the input wave properties struct for stokes solution
+function [wp] = fStokesIn(d, T, H, order, varargin)
+
+% wp = fStokesIn(d, T, H, order, ...)
 % ------------------------------------------------------------------------
-% d - mean water depth
-% T - wave period
-% H - trough-to-crest wave height, or the crest elevation. If it is the
-%     latter, set 'IterateCrest' to 'on'.
-% order - order of the stokes theory to be applied
-% varargin:
-%   'ReturnFlow' : ['on' | 'off']
-%   'DTerms' : ['on' | 'off']
-%   'SwlAdjust' : ['on' | 'off']
-%   'IterateCrest' : ['on' | 'off']
+% Constructs the input wave properties struct for a stokes solution.
+% - inputs:
+%   d [m] - mean water depth.
+%   T [s] - wave period.
+%   H [m] - wave height, or the crest elevation. If it is the latter, set
+%           'IterateCrest' to true.
+%   order [-] - order of the Stokes theory to be applied.
+% 	... - extra option-value pairs ('option', default or further input):
+%       ('IterateCrest', false) - switch this on if H is specified as a
+%                                 target crest elevation.
+%       ('ReturnFlow', false) - Eulerian return flow. This affects the wave
+%                               number and the horizontal velocity.
+%       ('DTerms', false) - D-coefficients in Table 2 of Fenton (195) that
+%                           describe the effect of a wave propagating on
+%                           top of Stokes drift. These will affect the wave
+%                           number calculated.
+%       ('SwlAdjust', true) - if order>=3, shift the position of the still
+%                             water level. As proposed by "Bowden, K.F. 
+%                             (1948) Observations of wave in a tidal
+%                             current. Proc. Roy. Soc. A 192:403-25".
+% - outputs:
+%   wp - wave properties struct required as the input to:
+%        fStokesEta(...), fStokesVel(...) and fStokesAcc(...).
 % ------------------------------------------------------------------------
-% Li Ma, October 2019
+% lm808, 10/2019.
+% github.com/lm808, all rights reserved.
+
 
     % default
     IterateCrest = false;

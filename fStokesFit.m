@@ -1,21 +1,30 @@
-function wp = fFitStokes(t,eta,d,order,fit_type,varargin)
-% t, eta - time history of the wave surface profile to be fitted, 
-%          will automatically pick the largest crest to fit
-% d - water depth
-% fit_type - [H | Cr], wave height (H) or crest elevation (Cr)
-% varargin:
-%   'plotfit' : [ 'on' | 'off' ] - whether to visualise fitted result
-%   'auto' : [T_choice,H_choice] - automatically pick a H, T choice, 
-%                                  use this for embedding the function 
-%                                  in other scripts
-%                                  T: 1) 0-up-x, 2) 0-down-x, 3) trough-to-trough
-%                                  H: 1) trough-to-peak, 2) peak-to-trough, 3) average
-%   'ReturnFlow' : ['on' | 'off']
-%   'DTerms' : ['on' | 'off']
-%   'SwlAdjust' : ['on' | 'off']
-% Li Ma, October 2014
+function wp = fStokesFit(t, eta, d, order, fit_type, varargin)
 
-% Defaults
+% wp = fFitStokes(t, eta, d, order, fit_type, ...)
+% ------------------------------------------------------------------------
+% Dispersion equation, with variable order (w.r.t. Hk/2) from 1st to 5th.
+% - inputs:
+%   t [s], eta [m] - time history of the wave surface profile to be fitted,
+%                    will automatically pick the largest crest to fit.
+%   d - mean water depth [m]
+%   order [-] - order of the Stokes theory to be applied.
+%   fit_type - 'H' or 'Cr', wave height (H) or crest elevation (Cr)
+% 	... - extra option-value pairs ('option', default or further input):
+%       ('plotfit', true) - whether to visualise fitted result
+%       ('auto' : [T_choice, H_choice]) - automatically pick a H, T choice: 
+%           T: 1) 0-up-x, 2) 0-down-x, 3) trough-to-trough
+%           H: 1) trough-to-peak, 2) peak-to-trough, 3) average
+%           Use this to embed the function in other scripts.
+%       ('ReturnFlow', false), ('DTerms', false) and ('SwlAdjust', true):
+%           details included at the beginning of fStokesIn.m
+% - outputs:
+%   wp - wave properties struct required as the input to:
+%        fStokesEta(...), fStokesVel(...) and fStokesAcc(...).
+% ------------------------------------------------------------------------
+% lm808, 10/2014.
+% github.com/lm808, all rights reserved.
+
+%% Defaults
 ReturnFlow = 0;
 DTerms = 0;
 SwlAdjust = 1;

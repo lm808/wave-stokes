@@ -1,10 +1,21 @@
-function [eta,etaij,swl] = fStokesEta(x,t,wp)
-% Computes surface elevation according to stokes theory (Fenton, 1985)
-% Acceptable input space-time coordinate (x,z,t) formats:
-% 1) Only one is a non-scalar
-% 2) Arrays of same sizes
-% 'order'  can be 1~5;
-% Li Ma, August 2013
+function [eta, etaij, swl] = fStokesEta(x, t, wp)
+
+% [eta, etaij, swl] = fStokesEta(x,t,wp)
+% ------------------------------------------------------------------------
+% Calculates the regular wave free surface based on Fenton (1985).
+% inputs:
+%   x [m], t [s] - spatial and time points.
+%                  Acceptable input formats for x and t:
+%                    1) Only one is a non-scalar.
+%                    2) Arrays of the same size.
+%   wp - struct containing the input wave properties. See fStokesIn.m
+% outputs:
+%   eta [m] - free surface elevation relative to SWL.
+%   etaij [m] - the contribution to eta at different orders and harmonics.
+%   swl [m] - the magnitude of any SWL adjustment for order>=3.
+% ------------------------------------------------------------------------
+% lm808, 08/2013.
+% github.com/lm808, all rights reserved.
 
 %% Unpack
 H = wp.H;

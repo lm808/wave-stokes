@@ -1,19 +1,23 @@
 function [k] = fDispersionV5(d,T,H,order,varargin)
-% Dispersion equation, with variable order (w.r.t. Hk/2) from 1st to 5th
-% Fenton, 1985
+
+% [] = fDispersionV5(d, T, H, order, ...)
 % ------------------------------------------------------------------------
-% d - mean water depth
-% T - wave period
-% H - trough-to-crest wave height
-% order - order of the stokes theory to be applied
-% varargin:
-%   'ReturnFlow' : ['on' | 'off']
-%   'DTerms' : ['on' | 'off']
+% Dispersion equation, with variable order (w.r.t. Hk/2) from 1st to 5th.
+% - inputs:
+%   d - mean water depth [m]
+%   T - wave period [s]
+%   H - wave height [m]
+%   order - order of the stokes theory to be applied [-]
+% 	... - extra option-value pairs ('option', default):
+%       ('ReturnFlow', false) and ('DTerms', false): details included at 
+%           the beginning of fStokesIn.m
+% - outputs:
+%   k - wave number [rad/m]
 % ------------------------------------------------------------------------
-% Li Ma, April 2015
+% lm808, 04/2015.
+% github.com/lm808, all rights reserved.
 
 % defaults & process inputs
-% these are here for compatibitily reasons with old codes. could be stripped-out.
 
     if nargin >= 5
         n = length(varargin);
@@ -47,7 +51,7 @@ function [k] = fDispersionV5(d,T,H,order,varargin)
     end
     if ~exist('DTerms','var')
         DTerms = 0;
-        disp('fDispersionV5: default OFF for d-terms.')
+        disp('fDispersionV5: default OFF for D-terms.')
     end
 
 % ----------------------- start calcs -----------------------------------

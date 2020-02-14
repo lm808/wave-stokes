@@ -1,10 +1,19 @@
-function [dudt, dwdt] = fStokesAcc(x,z,t,wp)
-% Computes velocity according to stokes theory (Fenton, 1985)
-% Acceptable input space-time coordinate (x,z,t) formats:
-% 1) Only one is a non-scalar
-% 2) Arrays of same sizes
-% 'order'  can be 1~5;
-% Li Ma, August 2013
+function [dudt, dwdt] = fStokesAcc(x, z, t, wp)
+
+% [u, w, ur, uij] = fStokesVel(x,z,t,wp)
+% ------------------------------------------------------------------------
+% Calculates the water particle accelerations based on Fenton (1985).
+% inputs:
+%   x, z [m], t [s] - spatial and time points.
+%                     Acceptable input formats for x, z and t:
+%                        1) Only one is a non-scalar.
+%                        2) Arrays of the same size.
+%   wp - struct containing the input wave properties. See fStokesIn.m
+% outputs:
+%   dudt, dwdt [m/s^2] - horizontal and vertical particle accelerations.
+% ------------------------------------------------------------------------
+% lm808, 08/2013.
+% github.com/lm808, all rights reserved.
 
 g = 9.81;
 
