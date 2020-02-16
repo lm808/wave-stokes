@@ -2,7 +2,9 @@
 
 An implimentation of the Stokes 5th-order regular wave theory, as proposed by Fenton (1985).
 
-Released under the GNU General Public License v3.0. The author reserves the rights to later publications of the project under a different licence. All usage must incorporate appropriate citation as listed below.
+Released under the GNU General Public License v3.0.  In addition, the author reserves the rights to later publications of the project under a different licence. All usage must incorporate appropriate citation as listed below.
+
+Disclaimer: the codes are provided 'as-is' without warranty and is used solely at the risk of the end-user.
 
 Copyright (c) 2013-2020 lm808. All rights reserved.
 
