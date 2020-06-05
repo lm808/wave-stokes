@@ -1,6 +1,6 @@
 # wave-stokes
 
-An implimentation of the Stokes 5th-order regular wave theory, as proposed by Fenton (1985).
+An implementation of the Stokes 5th-order regular wave theory, as proposed by Fenton (1985).
 
 Released under the GNU General Public License v3.0.  In addition, the author reserves the rights to later publications of the project under a different licence. All usage must incorporate appropriate citation as listed below.
 
@@ -22,7 +22,7 @@ Copyright (c) 2013-2020 lm808. All rights reserved.
 
 `fStokesIn.m`
 
-Function to prepare the input. This will output a MATLAB containing all the necessary inputs. Read the comments inside the function for details.
+Function to prepare the input. This will output a MATLAB struct containing all the necessary inputs. Read the comments inside the function for details.
 
 `fDispersionV5.m`
 

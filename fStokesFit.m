@@ -76,6 +76,7 @@ end
 
 eta = eta(its:ite);
 sp = find(eta == max(eta));
+sp = sp(1);
 
 t = t(its:ite);
 t = t-t(sp);
